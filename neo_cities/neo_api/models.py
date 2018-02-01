@@ -30,7 +30,7 @@ class Role(models.Model):
 	resources = models.ManyToManyField(Resource, through='ResourceDepot')
 
 
-class ResourceDepot():
+class ResourceDepot(models.Model):
 	quantity = models.IntegerField()
 	role = models.ForeignKey(Role, on_delete=models.CASCADE)
 	resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
