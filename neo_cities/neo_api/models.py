@@ -11,7 +11,7 @@ class Resource(models.Model):
 class Event(models.Model):
 	success_resources = models.ManyToManyField(Resource, through='Threshold')
 	icon = models.FileField(upload_to='icons/events/')
-	star_time = models.DateTimeField()
+	start_time = models.DateTimeField()
 	description = models.TextField()
 	details = models.TextField()
 
