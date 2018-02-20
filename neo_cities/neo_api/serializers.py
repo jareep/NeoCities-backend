@@ -1,21 +1,81 @@
 from rest_framework import serializers
-from neo_api.models import Event
+from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, \
+    Session, \
+    Action
 
 
-class EventSerializer(serializers.Serializer):
-    id = serializers.IntegerField(label='ID', read_only=True)
-    icon = serializers.ImageField()
-    # start_time = serializers.DateTimeField()
-    description = serializers.CharField()
-    details = serializers.CharField()
+class ResourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resource
+        fields = ('id', 'name', 'icon')
+        read_only_fields = ['id']
 
-    def create(self, validated_data):
-        event = Event.objects.create(**validated_data)
-        return event
 
-    def update(self, instance, validated_data):
-        instance.icon = validated_data.get('icon', instance.email);
-        # instance.start_time = validated_data.get('start_time', instance.start_time);
-        instance.description = validated_data.get('description', instance.description);
-        instance.details = validated_data.get('details', instance.details);
-        return instance
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('id', 'icon', 'start_time', 'description', 'details')
+        read_only_fields = ['id']
+
+
+class ThresholdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Threshold
+        fields = model._meta.get_fields()
+        read_only_fields = ['id']
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = model._meta.get_fields()
+        read_only_fields = ['id']
+
+
+class ResourceDepotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResourceDepot
+        fields = model._meta.get_fields()
+        read_only_fields = ['id']
+
+
+class ScenarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scenario
+        fields = model._meta.get_fields()
+        read_only_fields = ['id']
+
+
+class BriefingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Briefing
+        fields = model._meta.get_fields()
+        read_only_fields = ['id']
+
+
+class ScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Score
+        fields = model._meta.get_fields()
+        read_only_fields = ['id']
+
+
+class ParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Participant
+        fields = model._meta.get_fields()
+        read_only_fields = ['id']
+
+
+class SessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = model._meta.get_fields()
+        read_only_fields = ['id']
+
+
+class ActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Action
+        fields = model._meta.get_fields()
+        read_only_fields = ['id']
