@@ -16,7 +16,7 @@ class Event(models.Model):
     details = models.TextField()
 
 
-    class Threshold(models.Model):
+class Threshold(models.Model):
     order = models.IntegerField()
     amount = models.IntegerField()
     enforce_order = models.BooleanField(default=False)
@@ -57,7 +57,7 @@ class Score(models.Model):
 class Participant(models.Model):
     name = models.TextField()
     role = models.ForeignKey(Role, null=True, on_delete=models.SET_NULL)
-    score = models.ForeignKey(Score, on_delete='PROTECT')  # this should probably be under the session through role
+    score = models.ForeignKey(Score, on_delete=models.CASCADE)  # this should probably be under the session through role
 
 
 class Session(models.Model):
