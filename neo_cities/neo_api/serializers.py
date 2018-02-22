@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+
 # from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, \
 #     Session, \
 #     Action
@@ -16,25 +18,23 @@ from rest_framework import serializers
 #         "read_only_fields": ['id']})
 #     self.add(test)
 
-def getModelSerializer(db_model, field_exceptions):
-
+def get_model_serializer(db_model, field_exceptions):
     def clean_field(field):
-        return(not (field in field_exceptions))
+        return not (field in field_exceptions)
 
     # Grab the fields we want
     clean_fields = [field.name for field in db_model._meta.get_fields() if clean_field(field.name)]
 
     # Create the meta class for our serializer class
     meta_class = type("Meta", (),
-            {"model": db_model,
-            "fields": clean_fields,
-            "read_only_fields": ['id']})
+                      {"model": db_model,
+                       "fields": clean_fields,
+                       "read_only_fields": ['id']})
 
     # Create the serializer class and return it
     serializer_class = type(db_model.__name__ + "Serializer", (serializers.ModelSerializer,),
-        {"Meta": meta_class})
-    return(serializer_class)
-
+                            {"Meta": meta_class})
+    return serializer_class
 
 #
 # class ResourceSerializer(serializers.ModelSerializer):
