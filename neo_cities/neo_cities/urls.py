@@ -22,6 +22,15 @@ from neo_api import views
 router = routers.DefaultRouter()
 router.register(r'events', views.EventViewSet)
 router.register(r'resources', views.ResourceViewSet)
+router.register(r'threshold', views.ThresholdViewSet)
+router.register(r'role', views.RoleViewSet)
+router.register(r'resourcesdepot', views.ResourceDepotViewSet)
+router.register(r'scenario', views.ScenarioViewSet)
+router.register(r'briefing', views.BriefingViewSet)
+router.register(r'score', views.ScoreViewSet)
+router.register(r'participant', views.ParticipantViewSet)
+router.register(r'session', views.SessionViewSet)
+router.register(r'action', views.ActionViewSet)
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
