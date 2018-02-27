@@ -6,11 +6,12 @@ from neo_api.serializers import getModelSerializer
 from rest_framework import viewsets
 
 # These are field exceptions for every model serializer
-field_exceptions = ["scenario", "action"]
+field_exceptions = ["scenario", "action"]  # todo: look into storing the Model instead of string
+
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
-    serializer_class = getModelSerializer(Event, field_exceptions + ["threshold"])
+    serializer_class = get_model_serializer(Event, field_exceptions + ["threshold"])
 
 
 class ResourceViewSet(viewsets.ModelViewSet):
