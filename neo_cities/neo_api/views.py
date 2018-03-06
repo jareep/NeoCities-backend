@@ -1,7 +1,5 @@
 from django.shortcuts import render
-from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, \
-    Session, \
-    Action
+from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action
 from neo_api.serializers import get_model_serializer
 from rest_framework import viewsets
 
@@ -36,29 +34,32 @@ class ResourceDepotViewSet(viewsets.ModelViewSet):
 
 class ScenarioViewSet(viewsets.ModelViewSet):
     queryset = Scenario.objects.all()
-    serializer_class = get_model_serializer(Scenario, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Scenario, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
 
 
 class ScoreViewSet(viewsets.ModelViewSet):
     queryset = Score.objects.all()
-    serializer_class = get_model_serializer(Score, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Score, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
 
 
 class BriefingViewSet(viewsets.ModelViewSet):
     queryset = Briefing.objects.all()
-    serializer_class = get_model_serializer(Briefing, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Briefing, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+
 
 
 class ParticipantViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
-    serializer_class = get_model_serializer(Participant, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Participant, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+
 
 
 class SessionViewSet(viewsets.ModelViewSet):
     queryset = Session.objects.all()
-    serializer_class = get_model_serializer(Session, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Session, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+
 
 
 class ActionViewSet(viewsets.ModelViewSet):
     queryset = Action.objects.all()
-    serializer_class = get_model_serializer(Action, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Action, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
