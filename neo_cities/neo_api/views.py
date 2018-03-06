@@ -16,22 +16,22 @@ class EventViewSet(viewsets.ModelViewSet):
 
 class ResourceViewSet(viewsets.ModelViewSet):
     queryset = Resource.objects.all()
-    serializer_class = get_model_serializer(Resource, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Resource, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
 
 
 class ThresholdViewSet(viewsets.ModelViewSet):
     queryset = Threshold.objects.all()
-    serializer_class = get_model_serializer(Threshold, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Threshold, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
 
 
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
-    serializer_class = get_model_serializer(Role, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Role, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
 
 
 class ResourceDepotViewSet(viewsets.ModelViewSet):
     queryset = ResourceDepot.objects.all()
-    serializer_class = get_model_serializer(ResourceDepot, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(ResourceDepot, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
 
 
 class ScenarioViewSet(viewsets.ModelViewSet):
@@ -48,13 +48,16 @@ class BriefingViewSet(viewsets.ModelViewSet):
     queryset = Briefing.objects.all()
     serializer_class = get_model_serializer(Briefing, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
 
+
 class ParticipantViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
     serializer_class = get_model_serializer(Participant, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
 
+
 class SessionViewSet(viewsets.ModelViewSet):
     queryset = Session.objects.all()
     serializer_class = get_model_serializer(Session, field_exceptions + ["threshold" ,"event", "role", "resourcedepot"])
+
 
 class ActionViewSet(viewsets.ModelViewSet):
     queryset = Action.objects.all()

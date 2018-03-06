@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'neo_api',
-    'rest_framework_api_key'
+    'rest_framework_api_key',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -50,15 +51,26 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'neo_cities.urls'
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+)
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_PERMISSION_CLASSES': (
 #         'rest_framework_api_key.permissions.HasAPIAccess',
 #     )
 # }
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+       'rest_framework.permissions.AllowAny',
+    )
+}
 
 TEMPLATES = [
     {
