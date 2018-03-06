@@ -21,7 +21,7 @@ class ResourceModelTestCase(TestCase):
         # Save the object
         self.resource.save()
         new_count = Resource.objects.count()
-        # Check that the object was savedk
+        # Check that the object was saved
         self.assertEqual(old_count + 1, new_count)
 
 
