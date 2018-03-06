@@ -9,6 +9,7 @@ class Resource(models.Model):
 
 
 class Event(models.Model):
+    # TODO : Event Name Field & update in Test
     success_resources = models.ManyToManyField(Resource, through='Threshold')
     icon = models.FileField(upload_to='icons/events/')
     start_time = models.DateTimeField()
