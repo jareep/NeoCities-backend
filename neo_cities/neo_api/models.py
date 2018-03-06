@@ -21,7 +21,7 @@ class Threshold(models.Model):
     order = models.IntegerField()
     amount = models.IntegerField()
     enforce_order = models.BooleanField(default=False)
-    role = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
 

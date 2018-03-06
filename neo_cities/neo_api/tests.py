@@ -3,6 +3,9 @@ from PIL import Image
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.db.models.functions import Now
+from datetime import datetime
+from django.core.files import File
 
 from .models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action
 
@@ -43,7 +46,6 @@ class ResourceViewTestCase(TestCase):
         self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
 
     def test_api_created_resource_values_are_set(self):
-        print(self.response.data)
         response_name = self.response.data['name']
         expected_name = self.resource_data['name']
         self.assertEqual(expected_name, response_name)
@@ -64,11 +66,17 @@ class ResourceViewTestCase(TestCase):
 
 class DynamicModelTestCase(TestCase):
 
-    def create_test_image(self):
+    def create_test_api_image(self):
         with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as f:
             image = Image.new('RGB', (200, 200), 'white')
             image.save(f, 'PNG')
         return open(f.name, mode='rb')
+
+    def create_test_image(self):
+        with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as f:
+            image = Image.new('RGB', (200, 200), 'white')
+            image.save(f, 'PNG')
+        return f.name
 
     def assert_dictionaries_equal(self, expected, actual, fields=None):
         if fields is None:
@@ -94,9 +102,10 @@ class TestData(DynamicModelTestCase):
 
     def assert_model_can_create(self):
         manager = self.get_model_manager()
-        model_instance = self.get_model_instance()
         old_count = manager.objects.count()
-        model_instance.save()
+        model_instances = self.get_model_instance()
+        for model_instance in model_instances:
+            model_instance.save()
         new_count = manager.objects.count()
         self.assertEqual(old_count + 1, new_count)
 
@@ -104,6 +113,7 @@ class TestData(DynamicModelTestCase):
         model_data = self.get_api_data()
         client = APIClient()
         response = client.post(self.get_api_url_path(), model_data)
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
@@ -113,10 +123,10 @@ class ResourceTestDataCase(TestData):
 
     def get_model_instance(self):
         resource_name = "test_resource"
-        return Resource(name=resource_name)
+        return [Resource(name = resource_name)]
 
     def get_api_data(self):
-        image = self.create_test_image()
+        image = self.create_test_api_image()
         return {'name': 'Go to Ibiza', 'icon': image}
 
     def get_api_url_path(self):
@@ -132,17 +142,16 @@ class EventTestDataCase(TestData):
         return Event
 
     def get_model_instance(self):
-        from django.db.models.functions import Now
-        return Event(
-            success_resources=Threshold(),
+        event = Event(
             icon=self.create_test_image(),
             start_time=Now(),
             description='test desc',
             details='test details')
+        return [event]
 
     def get_api_data(self):
-        image = self.create_test_image()
-        return {'name': 'Go to Ibiza', 'icon': image}
+        image = self.create_test_api_image()
+        return {'name': 'Go to Ibiza', 'icon': image, 'start_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'description': "test desc", 'details': "test details"}
 
     def get_api_url_path(self):
         return '/api/events/'
