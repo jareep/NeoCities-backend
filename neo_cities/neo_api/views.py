@@ -24,7 +24,7 @@ class ThresholdViewSet(viewsets.ModelViewSet):
 
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
-    serializer_class = get_model_serializer(Role, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Role, field_exceptions + ["briefing", "resourcedepot", "participant"])
 
 
 class ResourceDepotViewSet(viewsets.ModelViewSet):
@@ -44,13 +44,13 @@ class ScoreViewSet(viewsets.ModelViewSet):
 
 class BriefingViewSet(viewsets.ModelViewSet):
     queryset = Briefing.objects.all()
-    serializer_class = get_model_serializer(Briefing, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Briefing, field_exceptions)
 
 
 
 class ParticipantViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
-    serializer_class = get_model_serializer(Participant, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Participant, field_exceptions)
 
 
 

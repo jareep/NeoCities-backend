@@ -55,21 +55,21 @@ class Score(models.Model):
     quant_score = models.DecimalField(decimal_places=2, max_digits=5)
 
 
-class Participant(models.Model):
-    name = models.TextField()
-    role = models.ForeignKey(Role, null=True, on_delete=models.SET_NULL)
-    score = models.ForeignKey(Score, on_delete=models.CASCADE)  # this should probably be under the session through role
-
-
 class Session(models.Model):
     # We need to keep in mind that this could result in orphaned session
     # But these sessions are always needed for logging
     scenario_ran = models.ForeignKey(Scenario, null=True, on_delete=models.SET_NULL)
-    session_token = models.TextField()
-    participants = models.ForeignKey(Participant, null=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField()
-    proctorNotes = models.TextField()
-    sessionNotes = models.TextField()
+    proctorNotes = models.TextField(default="")
+    sessionNotes = models.TextField(default="")
+
+
+class Participant(models.Model):
+    name = models.TextField()
+    token = models.TextField()
+    session = models.ForeignKey(Session, null=True, on_delete=models.SET_NULL)
+    role = models.ForeignKey(Role, null=True, on_delete=models.SET_NULL)
+    score = models.ForeignKey(Score, on_delete=models.CASCADE, null=True)  # this should probably be under the session through role
 
 
 class Action(models.Model):

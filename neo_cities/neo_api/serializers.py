@@ -12,9 +12,13 @@ from rest_framework import serializers
 #         "fields": serializer_model._meta.get_fields(),
 #         "read_only_fields": ['id']})
 #     self.add(test)
+# class ParticipantSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Participant
+#         fields = model._meta.get_fields()
+#         read_only_fields = ['id']
 
-
-def get_model_serializer(db_model, field_exceptions):
+def get_model_serializer(db_model, field_exceptions = []):
     def clean_field(field):
         return not (field in field_exceptions)
 
@@ -89,11 +93,7 @@ def get_model_serializer(db_model, field_exceptions):
 #         read_only_fields = ['id']
 #
 #
-# class ParticipantSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Participant
-#         fields = model._meta.get_fields()
-#         read_only_fields = ['id']
+
 #
 #
 # class SessionSerializer(serializers.ModelSerializer):
