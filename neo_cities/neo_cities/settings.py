@@ -60,6 +60,14 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
 )
 
+CORS_ALLOW_METHODS = (
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
 # REST_FRAMEWORK = {
 #     'DEFAULT_PERMISSION_CLASSES': (
 #         'rest_framework_api_key.permissions.HasAPIAccess',
