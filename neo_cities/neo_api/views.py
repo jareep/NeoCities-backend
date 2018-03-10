@@ -19,7 +19,7 @@ class ResourceViewSet(viewsets.ModelViewSet):
 
 class ThresholdViewSet(viewsets.ModelViewSet):
     queryset = Threshold.objects.all()
-    serializer_class = get_model_serializer(Threshold, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Threshold, field_exceptions)
 
 
 class RoleViewSet(viewsets.ModelViewSet):
