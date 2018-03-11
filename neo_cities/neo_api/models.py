@@ -17,7 +17,9 @@ class Event(models.Model):
     details = models.TextField()
 
 
+# it might be worth to look into a more advance model that will allow things to change over time eventually
 class Threshold(models.Model):
+    # todo: see if we could use a special value like -1 to say order does not matter
     order = models.IntegerField()
     amount = models.IntegerField()
     enforce_order = models.BooleanField(default=False)
@@ -53,7 +55,7 @@ class Briefing(models.Model):
 
 class Score(models.Model):
     quant_score = models.DecimalField(decimal_places=2, max_digits=5)
-
+    # score should probably store role and session
 
 class Session(models.Model):
     # We need to keep in mind that this could result in orphaned session
@@ -78,5 +80,5 @@ class Action(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     participant = models.ForeignKey(Participant, null=True, on_delete=models.SET_NULL)
     quantity = models.IntegerField()
-    resource = models.ManyToManyField(Resource)
+    resource = models.ManyToManyField(Resource) # todo: maybe the wrong relationship type
     event = models.ForeignKey(Event, null=True, on_delete=models.SET_NULL)
