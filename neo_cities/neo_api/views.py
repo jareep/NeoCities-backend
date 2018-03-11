@@ -34,7 +34,7 @@ class ResourceDepotViewSet(viewsets.ModelViewSet):
 
 class ScenarioViewSet(viewsets.ModelViewSet):
     queryset = Scenario.objects.all()
-    serializer_class = get_model_serializer(Scenario, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Scenario, field_exceptions + ["session", "threshold", "event", "role", "resourcedepot"])
 
 
 class ScoreViewSet(viewsets.ModelViewSet):
