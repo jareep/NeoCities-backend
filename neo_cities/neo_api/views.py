@@ -29,22 +29,22 @@ class RoleViewSet(viewsets.ModelViewSet):
 
 class ResourceDepotViewSet(viewsets.ModelViewSet):
     queryset = ResourceDepot.objects.all()
-    serializer_class = get_model_serializer(ResourceDepot, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(ResourceDepot, field_exceptions)
 
 
 class ScenarioViewSet(viewsets.ModelViewSet):
     queryset = Scenario.objects.all()
-    serializer_class = get_model_serializer(Scenario, field_exceptions + ["session", "threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Scenario, field_exceptions + ["briefing", "session"])
 
 
 class ScoreViewSet(viewsets.ModelViewSet):
     queryset = Score.objects.all()
-    serializer_class = get_model_serializer(Score, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Score, field_exceptions + ["participant"])
 
 
 class BriefingViewSet(viewsets.ModelViewSet):
     queryset = Briefing.objects.all()
-    serializer_class = get_model_serializer(Briefing, field_exceptions)
+    serializer_class = get_model_serializer(Briefing, ["action"])
 
 
 
@@ -56,7 +56,7 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
 class SessionViewSet(viewsets.ModelViewSet):
     queryset = Session.objects.all()
-    serializer_class = get_model_serializer(Session, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Session, field_exceptions + ["participant"])
 
 
 

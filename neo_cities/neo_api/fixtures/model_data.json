@@ -1,0 +1,36 @@
+[
+  {
+    "model": "neo_api.resource",
+    "pk": 1,
+    "fields": {
+      "name": "Model Creation",
+      "icon": "ResourceIcon.png"
+    }
+  },
+  {
+    "model": "neo_api.resource",
+    "pk": 2,
+    "fields": {
+      "name": "API Creation",
+      "icon": "ResourceIcon.png"
+    }
+  },
+  {
+    "model": "neo_api.event",
+    "pk": 1,
+    "fields": {
+      "description": "description",
+      "details": "details",
+      "icon": "ResourceIcon.png",
+      "start_time": "2018-03-13 16:13:59"
+    }
+  },
+  {
+    "model": "neo_api.role",
+    "pk": 1,
+    "fields": {
+      "name": "Fire Chief",
+      "icon": "ResourceIcon.png"
+    }
+  }
+]

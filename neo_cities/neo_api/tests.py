@@ -63,7 +63,6 @@ class TestData(DynamicModelTestCase):
 
     @classmethod
     def post_and_grab_id(cls):
-        print(cls.api_post().data)
         return cls.api_post().data["id"]
 
     def assert_model_can_create(self):
@@ -76,7 +75,8 @@ class TestData(DynamicModelTestCase):
 
     def assert_api_post(self):
         response = self.api_post()
-        print(response.data)
+        if(response.status_code != status.HTTP_201_CREATED):
+            print("\n\n" + self.__class__.__name__ + " " + str(response.data) + "\n\n")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED,
                          " where class = " + self.__class__.__name__)
 
@@ -138,6 +138,10 @@ class EventTest(TestData):
 
 
 class ThresholdTest(TestData):
+
+    resource = Resource.objects.get(pk=1)
+    event = Event.objects.get(pk=1)
+
     @classmethod
     def get_model_manager(cls):
         return Threshold
@@ -148,8 +152,8 @@ class ThresholdTest(TestData):
             order=1,
             amount=42,
             enforce_order=False,
-            resource=ResourceTest.model_create(),
-            event=EventTest.model_create())
+            resource=cls.resource,
+            event=cls.event)
 
     @classmethod
     def get_api_data(cls):
@@ -199,6 +203,10 @@ class RoleTest(TestData):
 
 
 class ResourceDepotTest(TestData):
+
+    resource = Resource.objects.get(pk=1)
+    role = Role.objects.get(pk=1)
+
     @classmethod
     def get_model_manager(cls):
         return ResourceDepot
@@ -207,8 +215,8 @@ class ResourceDepotTest(TestData):
     def get_model_instance(cls):
         return ResourceDepot(
             quantity=1,
-            role=RoleTest.model_create(),
-            resource=ResourceTest.model_create()
+            role=cls.role,
+            resource=cls.resource
         )
 
     @classmethod
@@ -241,6 +249,8 @@ class ScenarioTest(TestData):
     @classmethod
     def get_api_data(cls):
         return {
+            "events": [EventTest.post_and_grab_id()],
+            "roles": [RoleTest.post_and_grab_id()]
         }
 
     @classmethod
@@ -270,7 +280,7 @@ class BriefingTest(TestData):
         return {
             'details': 'test details',
             'role': RoleTest.post_and_grab_id(),
-            'scenario': ScenarioTest.api_post()
+            'scenario': ScenarioTest.post_and_grab_id()
         }
 
     @classmethod
@@ -363,7 +373,7 @@ class ParticipantTest(TestData):
         return {
             'name': 'test name',
             'token': 'test token',
-            'session': SessionTest.api_post(),
+            'session': SessionTest.post_and_grab_id(),
             'role': RoleTest.post_and_grab_id(),
             'score': ScoreTest.post_and_grab_id()
         }
@@ -395,12 +405,12 @@ class ActionTest(TestData):
 
     @classmethod
     def get_api_data(cls):
-        print(SessionTest.api_post().data)
         return {
             'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'action_type': False,
-            'session': SessionTest.api_post().data['id'],
-            'participant': ParticipantTest.api_post(),
+            'session': SessionTest.post_and_grab_id(),
+            'participant': ParticipantTest.post_and_grab_id(),
+            'resource': [ResourceTest.post_and_grab_id()],
             'quantity': 2,
             # 'resource': ResourceTest.api_post(),
             'event': EventTest.post_and_grab_id()
