@@ -39,7 +39,7 @@ class ParticipantSerializer(serializers.ModelSerializer):
         model = Participant
         fields = ["name", "token", "session", "role", "score"]
         read_only_fields = ['id']
-        depth = 1
+        depth = 2
 #
 # class ResourceSerializer(serializers.ModelSerializer):
 #     class Meta:
