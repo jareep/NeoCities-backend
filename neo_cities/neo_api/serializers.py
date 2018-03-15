@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from neo_api.models import Role, Participant
 
 
 # from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action
@@ -12,11 +13,6 @@ from rest_framework import serializers
 #         "fields": serializer_model._meta.get_fields(),
 #         "read_only_fields": ['id']})
 #     self.add(test)
-# class ParticipantSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Participant
-#         fields = model._meta.get_fields()
-#         read_only_fields = ['id']
 
 def get_model_serializer(db_model, field_exceptions = []):
     def clean_field(field):
@@ -36,6 +32,14 @@ def get_model_serializer(db_model, field_exceptions = []):
                             {"Meta": meta_class})
     return serializer_class
 
+class ParticipantSerializer(serializers.ModelSerializer):
+    role = get_model_serializer(Role)
+
+    class Meta:
+        model = Participant
+        fields = ["name", "token", "session", "role", "score"]
+        read_only_fields = ['id']
+        depth = 1
 #
 # class ResourceSerializer(serializers.ModelSerializer):
 #     class Meta:

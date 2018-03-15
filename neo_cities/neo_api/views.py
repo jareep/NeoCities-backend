@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action
-from neo_api.serializers import get_model_serializer
+from neo_api.serializers import get_model_serializer, ParticipantSerializer
 from rest_framework import viewsets
 
 # These are field exceptions for every model serializer
@@ -50,7 +50,7 @@ class BriefingViewSet(viewsets.ModelViewSet):
 
 class ParticipantViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
-    serializer_class = get_model_serializer(Participant, field_exceptions)
+    serializer_class = ParticipantSerializer
 
 
 
