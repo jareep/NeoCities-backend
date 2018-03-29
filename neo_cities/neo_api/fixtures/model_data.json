@@ -26,6 +26,15 @@
     }
   },
   {
+    "model": "neo_api.resourcedepot",
+    "pk": 1,
+    "fields": {
+      "quantity": 2,
+      "role": 1,
+      "resource": 1
+    }
+  },
+  {
     "model": "neo_api.role",
     "pk": 1,
     "fields": {
