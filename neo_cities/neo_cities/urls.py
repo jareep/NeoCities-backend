@@ -6,8 +6,8 @@ from neo_api import views
 
 router = routers.DefaultRouter()
 # TODO This can be refactored to be less redundant
-router.register(r'events', views.EventViewSet)
-router.register(r'resources', views.ResourceViewSet)
+router.register(r'event', views.EventViewSet)
+router.register(r'resource', views.ResourceViewSet)
 router.register(r'threshold', views.ThresholdViewSet)
 router.register(r'role', views.RoleViewSet)
 router.register(r'resourcesdepot', views.ResourceDepotViewSet)
