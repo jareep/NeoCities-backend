@@ -1,5 +1,6 @@
 from django.db import models
 
+# TODO Before hook to check that no session is active. If the session is active deny saving
 
 # Create your models here.
 
@@ -35,8 +36,8 @@ class Role(models.Model):
 
 class ResourceDepot(models.Model):
     quantity = models.IntegerField()
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, name="role")
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, name="resource")
 
 
 class Scenario(models.Model):

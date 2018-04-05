@@ -1,10 +1,16 @@
 from django.shortcuts import render
 from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action
-from neo_api.serializers import get_model_serializer, ParticipantSerializer
+from neo_api.serializers import get_model_serializer, ParticipantSerializer, ResourceSerializer, RoleSerializer
 from rest_framework import viewsets
-
+from rest_framework.views import APIView
 # These are field exceptions for every model serializer
 field_exceptions = ["scenario", "action"]  # todo: look into storing the Model instead of string
+
+
+# View for the intial login
+class InitParticipant(APIView):
+    def get(self, request, format=None):
+        print(request)
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -14,7 +20,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
 class ResourceViewSet(viewsets.ModelViewSet):
     queryset = Resource.objects.all()
-    serializer_class = get_model_serializer(Resource, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = ResourceSerializer
 
 
 class ThresholdViewSet(viewsets.ModelViewSet):
@@ -24,7 +30,7 @@ class ThresholdViewSet(viewsets.ModelViewSet):
 
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
-    serializer_class = get_model_serializer(Role, field_exceptions + ["briefing", "resourcedepot", "participant"])
+    serializer_class = RoleSerializer
 
 
 class ResourceDepotViewSet(viewsets.ModelViewSet):
