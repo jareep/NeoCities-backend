@@ -1,19 +1,6 @@
 from rest_framework import serializers
 from neo_api.models import Role, Participant, ResourceDepot, Resource
 
-
-# from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action
-#
-# models = (Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action)
-#
-#
-# for serializer_model in models:
-#     test = type(serializer_model.__name__ + "Serializer", (serializers.ModelSerializer,),
-#         {"model": serializer_model,
-#         "fields": serializer_model._meta.get_fields(),
-#         "read_only_fields": ['id']})
-#     self.add(test)
-
 def get_model_serializer(db_model, field_exceptions = []):
     def clean_field(field):
         return not (field in field_exceptions)

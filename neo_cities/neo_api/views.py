@@ -1,16 +1,27 @@
 from django.shortcuts import render
-from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action
+from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action, ResourceEventState
 from neo_api.serializers import get_model_serializer, ParticipantSerializer, ResourceSerializer, RoleSerializer
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from rest_framework.response import Response
+
 # These are field exceptions for every model serializer
 field_exceptions = ["scenario", "action"]  # todo: look into storing the Model instead of string
 
 
 # View for the intial login
 class InitParticipant(APIView):
-    def get(self, request, format=None):
-        print(request)
+    def get(self, request, participantKey, format=None):
+        participant = Participant.objects.filter(token=participantKey)[0]
+        return(Response({"participant": participant.id, "sessionToken": participant.session.sessionKey}))
+
+class ResourceEventStateViewSet(APIView):
+
+    def get(self, request, sessionKey, format=None):
+        session = Session.objects.filter(sessionKey=sessionKey)[0]
+        current_state = get_model_serializer(ResourceEventState, field_exceptions)(ResourceEventState.objects.filter(session=session), many=True)
+        return(Response(current_state.data))
+
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -62,10 +73,10 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
 class SessionViewSet(viewsets.ModelViewSet):
     queryset = Session.objects.all()
-    serializer_class = get_model_serializer(Session, field_exceptions + ["participant"])
+    serializer_class = get_model_serializer(Session, field_exceptions + ["participant", "resourceeventstate"])
 
 
 
 class ActionViewSet(viewsets.ModelViewSet):
     queryset = Action.objects.all()
-    serializer_class = get_model_serializer(Action, field_exceptions + ["threshold", "event", "role", "resourcedepot"])
+    serializer_class = get_model_serializer(Action, field_exceptions + ["threshold", "role", "resourcedepot"])

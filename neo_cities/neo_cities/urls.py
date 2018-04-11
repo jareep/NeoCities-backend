@@ -20,6 +20,8 @@ router.register(r'action', views.ActionViewSet)
 
 urlpatterns = [
     # url(r'^initParticipant/{pk}/', views.InitParticipant),
+    path('api/resourceeventstate/<sessionKey>/', views.ResourceEventStateViewSet.as_view()),
+    path('api/initparticipant/<participantKey>/', views.InitParticipant.as_view()),
     url(r'^api/', include(router.urls)),
     path('admin/', admin.site.urls),
     #   url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))

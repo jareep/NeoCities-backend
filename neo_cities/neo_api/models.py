@@ -1,7 +1,5 @@
 from django.db import models
 
-# TODO Before hook to check that no session is active. If the session is active deny saving
-
 # Create your models here.
 
 class Resource(models.Model):
@@ -53,7 +51,6 @@ class Briefing(models.Model):
 
 # Logging Info
 
-
 class Score(models.Model):
     quant_score = models.DecimalField(decimal_places=2, max_digits=5)
     # score should probably store role and session
@@ -61,6 +58,7 @@ class Score(models.Model):
 class Session(models.Model):
     # We need to keep in mind that this could result in orphaned session
     # But these sessions are always needed for logging
+    sessionKey = models.CharField(max_length=40, unique=True)
     scenario_ran = models.ForeignKey(Scenario, null=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField()
     proctorNotes = models.TextField(default="")
@@ -69,7 +67,7 @@ class Session(models.Model):
 
 class Participant(models.Model):
     name = models.TextField()
-    token = models.TextField()
+    token = models.CharField(max_length=40, unique=True)
     session = models.ForeignKey(Session, null=True, on_delete=models.SET_NULL)
     role = models.ForeignKey(Role, null=True, on_delete=models.SET_NULL)
     score = models.ForeignKey(Score, on_delete=models.CASCADE, null=True)  # this should probably be under the session through role
@@ -77,9 +75,16 @@ class Participant(models.Model):
 
 class Action(models.Model):
     timestamp = models.DateTimeField()
-    action_type = models.BooleanField()  # category type
+    action_type = models.CharField(max_length=6)  # category type, DEPLOY, RECALL
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     participant = models.ForeignKey(Participant, null=True, on_delete=models.SET_NULL)
     quantity = models.IntegerField()
-    resource = models.ManyToManyField(Resource) # todo: maybe the wrong relationship type
+    resource = models.ForeignKey(Resource, null=True, on_delete=models.SET_NULL)
     event = models.ForeignKey(Event, null=True, on_delete=models.SET_NULL)
+
+class ResourceEventState(models.Model):
+    success = models.BooleanField(default=False)
+    deployed = models.IntegerField(default=0)
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    session = models.ForeignKey(Session, null=True, on_delete=models.CASCADE)
