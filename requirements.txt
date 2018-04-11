@@ -3,3 +3,5 @@ djangorestframework
 Pillow
 drfapikey
 django-cors-headers
+channels
+channels_redis
