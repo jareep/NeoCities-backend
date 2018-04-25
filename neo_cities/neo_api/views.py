@@ -12,13 +12,13 @@ field_exceptions = ["scenario", "action"]  # todo: look into storing the Model i
 # View for the intial login
 class InitParticipant(APIView):
     def get(self, request, participantKey, format=None):
-        participant = Participant.objects.filter(token=participantKey)[0]
+        participant = Participant.objects.get(token = participantKey)
         return(Response({"participant": participant.id, "sessionToken": participant.session.sessionKey}))
 
 class ResourceEventStateViewSet(APIView):
 
     def get(self, request, sessionKey, format=None):
-        session = Session.objects.filter(sessionKey=sessionKey)[0]
+        session = Session.objects.get(sessionKey = sessionKey)
         current_state = get_model_serializer(ResourceEventState, field_exceptions)(ResourceEventState.objects.filter(session=session), many=True)
         return(Response(current_state.data))
 

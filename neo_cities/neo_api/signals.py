@@ -12,36 +12,37 @@ import json
 @receiver(post_save, sender=Action)
 def send_dynamic_information(**kwargs):
     if kwargs["created"]:
-        # If the resource event state has not been created create it
         event = kwargs['instance'].event
         resource = kwargs['instance'].resource
         session = kwargs['instance'].session
-        resource_event_state = ResourceEventState.objects.filter(session = session, event = event, resource = resource)[0]
+
+        # If the resource event state has not been created create it
+        resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = resource)
         if(not resource_event_state):
             ResourceEventState.objects.create(session = session, resource = resource, event = event)
+
         # Calculate the appropriate values for the ResourceEventState
         if(kwargs['instance'].action_type == "DEPLOY"):
             resource_event_state.deployed += kwargs['instance'].quantity
         elif(kwargs['instance'].action_type == "RECALL"):
             resource_event_state.deployed -= kwargs['instance'].quantity
         resource_event_state.save()
+
         # Check the Threshold model for the Event and see if the Event was successful
         # TODO If Ordering Check the ordering of the ResourceEventState based on the Create TimeStamp
         win_status = check_for_win(event, session)
-        for res in ResourceEventState.objects.filter(session = session, event = event):
-            res.success = win_status
-        resource_event_state.save()
+
         # Send the updated ResourceEventState
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": json.dumps(get_model_serializer(ResourceEventState, [])(ResourceEventState.objects.filter(session=session), many=True).data)})
+        async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": json.dumps({ "event_success": win_status, "resource_event_state": get_model_serializer(ResourceEventState, [])(ResourceEventState.objects.filter(session=session), many=True).data})})
 
 
 def check_for_win(event, session):
-    event_won = False
+    event_won = True
     for threshold in event.threshold_set.all():
-        resource_event_state = ResourceEventState.objects.filter(session = session, event = event, resource = threshold.resource)[0]
+        resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = threshold.resource)
         if resource_event_state and resource_event_state.quantity >= threshold.amount:
-            event_won = True
+            resource_event_state.update(success = True)
         else:
             event_won = False
-            break;
+    return(event_won)
