@@ -17,9 +17,10 @@ def send_dynamic_information(**kwargs):
         session = kwargs['instance'].session
 
         # If the resource event state has not been created create it
-        resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = resource)
-        if(not resource_event_state):
-            ResourceEventState.objects.create(session = session, resource = resource, event = event)
+        try:
+            resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = resource)
+        except ResourceEventState.DoesNotExist:
+            resource_event_state = ResourceEventState.objects.create(session = session, resource = resource, event = event)
 
         # Calculate the appropriate values for the ResourceEventState
         if(kwargs['instance'].action_type == "DEPLOY"):
