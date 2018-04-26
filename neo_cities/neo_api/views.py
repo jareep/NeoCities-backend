@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action, ResourceEventState
-from neo_api.serializers import get_model_serializer, ParticipantSerializer, ResourceSerializer, RoleSerializer
+from neo_api.serializers import get_model_serializer, ParticipantSerializer, ResourceSerializer, RoleSerializer, get_resource_event_state
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,7 +13,10 @@ field_exceptions = ["scenario", "action"]  # todo: look into storing the Model i
 class InitParticipant(APIView):
     def get(self, request, participantKey, format=None):
         participant = Participant.objects.get(token = participantKey)
-        return(Response({"participant": participant.id, "sessionToken": participant.session.sessionKey}))
+        for resource in participant.role.resources.all():
+            for event in participant.session.scenario_ran.events.all():
+                get_resource_event_state(event, resource, participant.session)
+        return(Response({"participant": participant.id, "sessionToken": participant.session.sessionKey, "ResourceEventStates": get_model_serializer(ResourceEventState, [])(ResourceEventState.objects.filter(session=participant.session), many=True).data}))
 
 class ResourceEventStateViewSet(APIView):
 

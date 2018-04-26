@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from neo_api.models import Role, Participant, ResourceDepot, Resource
+from neo_api.models import Role, Participant, ResourceDepot, Resource, ResourceEventState
 
 def get_model_serializer(db_model, field_exceptions = []):
     def clean_field(field):
@@ -46,3 +46,12 @@ class ParticipantSerializer(serializers.ModelSerializer):
         fields = ["name", "token", "session", "role", "score"]
         read_only_fields = ['id']
         depth = 4
+
+def get_resource_event_state(event, resource, session):
+    # If the resource event state has not been created create it
+    try:
+        resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = resource)
+    except ResourceEventState.DoesNotExist:
+        resource_event_state = ResourceEventState.objects.create(session = session, resource = resource, event = event)
+    resource_event_state.save()
+    return(resource_event_state)

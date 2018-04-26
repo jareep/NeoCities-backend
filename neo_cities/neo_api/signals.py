@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from neo_api.models import Action, ResourceEventState
-from neo_api.serializers import get_model_serializer
+from neo_api.serializers import get_model_serializer, get_resource_event_state
 from . import dynamic_consumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -16,18 +16,7 @@ def send_dynamic_information(**kwargs):
         resource = kwargs['instance'].resource
         session = kwargs['instance'].session
 
-        # If the resource event state has not been created create it
-        try:
-            resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = resource)
-        except ResourceEventState.DoesNotExist:
-            resource_event_state = ResourceEventState.objects.create(session = session, resource = resource, event = event)
-
-        # Calculate the appropriate values for the ResourceEventState
-        if(kwargs['instance'].action_type == "DEPLOY"):
-            resource_event_state.deployed += kwargs['instance'].quantity
-        elif(kwargs['instance'].action_type == "RECALL"):
-            resource_event_state.deployed -= kwargs['instance'].quantity
-        resource_event_state.save()
+        resource_event_state = get_resource_event_state(event, resource, session)
 
         # Check the Threshold model for the Event and see if the Event was successful
         # TODO If Ordering Check the ordering of the ResourceEventState based on the Create TimeStamp
