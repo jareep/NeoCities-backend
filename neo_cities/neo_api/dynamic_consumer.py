@@ -14,7 +14,6 @@ class DynamicConsumer(JsonWebsocketConsumer):
         """
         self.accept()
         async_to_sync(self.channel_layer.group_add)("participants", self.channel_name)
-        self.send(json.dumps({"response": "connected"}))
 
     def receive_json(self, content, **kwargs):
         """

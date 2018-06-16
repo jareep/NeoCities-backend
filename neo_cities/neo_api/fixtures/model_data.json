@@ -3,7 +3,7 @@
     "model": "neo_api.resource",
     "pk": 1,
     "fields": {
-      "name": "Model Creation",
+      "name": "FireTruck",
       "icon": "ResourceIcon.png"
     }
   },
@@ -11,7 +11,7 @@
     "model": "neo_api.resource",
     "pk": 2,
     "fields": {
-      "name": "API Creation",
+      "name": "Police Car",
       "icon": "ResourceIcon.png"
     }
   },
@@ -19,8 +19,28 @@
     "model": "neo_api.event",
     "pk": 1,
     "fields": {
-      "description": "description",
-      "details": "details",
+      "description": "Someone is not being ideal",
+      "details": "Other details about the non-idealness",
+      "icon": "ResourceIcon.png",
+      "start_time": "2018-03-13 16:13:59"
+    }
+  },
+  {
+    "model": "neo_api.threshold",
+    "pk": 1,
+    "fields": {
+      "order": 1,
+      "amount": 1,
+      "event": 2,
+      "resource": 1
+    }
+  },
+  {
+    "model": "neo_api.event",
+    "pk": 2,
+    "fields": {
+      "description": "Something is burning",
+      "details": "Burning is not ideal",
       "icon": "ResourceIcon.png",
       "start_time": "2018-03-13 16:13:59"
     }
@@ -35,6 +55,15 @@
     }
   },
   {
+    "model": "neo_api.resourcedepot",
+    "pk": 2,
+    "fields": {
+      "quantity": 4,
+      "role": 2,
+      "resource": 2
+    }
+  },
+  {
     "model": "neo_api.role",
     "pk": 1,
     "fields": {
@@ -43,11 +72,19 @@
     }
   },
   {
+    "model": "neo_api.role",
+    "pk": 2,
+    "fields": {
+      "name": "Police Chief",
+      "icon": "ResourceIcon.png"
+    }
+  },
+  {
     "model": "neo_api.scenario",
     "pk": 1,
     "fields": {
-      "events": [1],
-      "roles": [1]
+      "events": [1, 2],
+      "roles": [1, 2]
     }
   },
   {
@@ -56,6 +93,15 @@
     "fields": {
       "details": "it's rough",
       "role": 1,
+      "scenario": 1
+    }
+  },
+  {
+    "model": "neo_api.briefing",
+    "pk": 2,
+    "fields": {
+      "details": "It's not that rough",
+      "role": 2,
       "scenario": 1
     }
   },
@@ -85,5 +131,16 @@
       "role": 1,
       "score": "1"
     }
-  }
+  },
+  {
+   "model": "neo_api.participant",
+   "pk": 2,
+   "fields": {
+     "name": "June",
+     "token": "NewParticpantID",
+     "session": 1,
+     "role": 2,
+     "score": "1"
+   }
+ }
 ]

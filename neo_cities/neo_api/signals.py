@@ -18,8 +18,15 @@ def send_dynamic_information(**kwargs):
 
         resource_event_state = get_resource_event_state(event, resource, session)
 
-        # Check the Threshold model for the Event and see if the Event was successful
+        # Calculate the appropriate values for the ResourceEventState
+        print(kwargs['instance'].action_type)
+        if(kwargs['instance'].action_type == "DEPLOY"):
+            resource_event_state.deployed += kwargs['instance'].quantity
+        elif(kwargs['instance'].action_type == "RECALL"):
+            resource_event_state.deployed -= kwargs['instance'].quantity
+        resource_event_state.save()
         # TODO If Ordering Check the ordering of the ResourceEventState based on the Create TimeStamp
+        # Check the Threshold model for the Event and see if the Event was successful
         win_status = check_for_win(event, session)
 
         # Send the updated ResourceEventState
@@ -31,8 +38,11 @@ def check_for_win(event, session):
     event_won = True
     for threshold in event.threshold_set.all():
         resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = threshold.resource)
-        if resource_event_state and resource_event_state.quantity >= threshold.amount:
-            resource_event_state.update(success = True)
+        if resource_event_state and resource_event_state.deployed >= threshold.amount:
+            resource_event_state.success = True
+            resource_event_state.save()
         else:
+            resource_event_state.success = False
+            resource_event_state.save()
             event_won = False
     return(event_won)

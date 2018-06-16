@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from neo_api.models import Role, Participant, ResourceDepot, Resource, ResourceEventState
+from neo_api.models import Role, Participant, ResourceDepot, Resource, ResourceEventState, Scenario, Session, Action, Briefing ,Threshold
 
 def get_model_serializer(db_model, field_exceptions = []):
     def clean_field(field):
@@ -9,10 +9,10 @@ def get_model_serializer(db_model, field_exceptions = []):
     clean_fields = [field.name for field in db_model._meta.get_fields() if clean_field(field.name)]
 
     # Create the meta class for our serializer class
-    meta_class = type("Meta", (),
-                      {"model": db_model,
-                       "fields": clean_fields,
-                       "read_only_fields": ['id']})
+    meta_data = {"model": db_model, "fields": clean_fields, "read_only_fields": ['id']}
+    if(db_model != Action and db_model != Threshold and db_model != Briefing):
+        meta_data["depth"] = 2
+    meta_class = type("Meta", (), meta_data)
 
     # Create the serializer class and return it
     serializer_class = type(db_model.__name__ + "Serializer", (serializers.ModelSerializer,),
@@ -20,7 +20,6 @@ def get_model_serializer(db_model, field_exceptions = []):
     return serializer_class
 
 class ResourceSerializer(serializers.ModelSerializer):
-    resourcedepot_set = get_model_serializer(ResourceDepot)
 
     class Meta:
         model = Resource
@@ -29,21 +28,40 @@ class ResourceSerializer(serializers.ModelSerializer):
         depth = 3
 
 class RoleSerializer(serializers.ModelSerializer):
-    resourcedepot_set = get_model_serializer(ResourceDepot)
+    resourcedepot_set = get_model_serializer(ResourceDepot)(many=True)
 
     class Meta:
         model = Role
-        fields = ["resourcedepot_set", "icon"]
-        read_only_fields = ['id', "resourcedepot_set"]
+        fields = ["resourcedepot_set", "icon", "id", "name"]
+        read_only_fields = ['id']
         depth = 3
 
 
+class ScenarioSerializer(serializers.ModelSerializer):
+    roles = RoleSerializer(many=True)
+
+    class Meta:
+        model = Scenario
+        fields = ["events", "roles"]
+        read_only_fields = ['id']
+        depth = 4
+
+class SessionSerializer(serializers.ModelSerializer):
+    scenario_ran = ScenarioSerializer()
+
+    class Meta:
+        model = Session
+        fields = ["scenario_ran"]
+        read_only_fields = ['id']
+        depth = 4
+
 class ParticipantSerializer(serializers.ModelSerializer):
-    role = RoleSerializer
+    role = RoleSerializer()
+    session = SessionSerializer()
 
     class Meta:
         model = Participant
-        fields = ["name", "token", "session", "role", "score"]
+        fields = ["name", "token", "session", "score", "role"]
         read_only_fields = ['id']
         depth = 4
 
@@ -53,5 +71,6 @@ def get_resource_event_state(event, resource, session):
         resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = resource)
     except ResourceEventState.DoesNotExist:
         resource_event_state = ResourceEventState.objects.create(session = session, resource = resource, event = event)
+
     resource_event_state.save()
     return(resource_event_state)

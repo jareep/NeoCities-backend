@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action, ResourceEventState
-from neo_api.serializers import get_model_serializer, ParticipantSerializer, ResourceSerializer, RoleSerializer, get_resource_event_state
+from neo_api.serializers import get_model_serializer, ParticipantSerializer, ResourceSerializer, RoleSerializer, ScenarioSerializer ,get_resource_event_state
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,6 +8,14 @@ from rest_framework.response import Response
 # These are field exceptions for every model serializer
 field_exceptions = ["scenario", "action"]  # todo: look into storing the Model instead of string
 
+def intial_data(participant):
+    return({
+    "participant": participant.id, "sessionToken": participant.session.sessionKey,
+    "sessionID": participant.session.id,
+    "ResourceEventStates": get_model_serializer(ResourceEventState, [])(ResourceEventState.objects.filter(session=participant.session), many=True).data,
+    "Events": get_model_serializer(Event, field_exceptions + ["threshold", "resourceeventstate"])(participant.session.scenario_ran.events.all(), many=True).data,
+    "Briefing": get_model_serializer(Briefing, [])(Briefing.objects.filter(role = participant.role, scenario = participant.session.scenario_ran), many=True).data
+    })
 
 # View for the intial login
 class InitParticipant(APIView):
@@ -16,7 +24,7 @@ class InitParticipant(APIView):
         for resource in participant.role.resources.all():
             for event in participant.session.scenario_ran.events.all():
                 get_resource_event_state(event, resource, participant.session)
-        return(Response({"participant": participant.id, "sessionToken": participant.session.sessionKey, "ResourceEventStates": get_model_serializer(ResourceEventState, [])(ResourceEventState.objects.filter(session=participant.session), many=True).data}))
+        return(Response(intial_data(participant)))
 
 class ResourceEventStateViewSet(APIView):
 
@@ -29,7 +37,7 @@ class ResourceEventStateViewSet(APIView):
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
-    serializer_class = get_model_serializer(Event, field_exceptions + ["threshold"])
+    serializer_class = get_model_serializer(Event, field_exceptions + ["threshold", "resourceeventstate"])
 
 
 class ResourceViewSet(viewsets.ModelViewSet):
