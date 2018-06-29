@@ -6,6 +6,9 @@ class Resource(models.Model):
     name = models.TextField()
     icon = models.FileField(upload_to='icons/')
 
+    def __str__(self):
+     return self.name
+
 
 class Event(models.Model):
     # TODO : Event Name Field & update in Test
@@ -14,6 +17,9 @@ class Event(models.Model):
     start_time = models.DateTimeField()
     description = models.TextField()
     details = models.TextField()
+
+    def __str__(self):
+     return self.description
 
 
 # it might be worth to look into a more advance model that will allow things to change over time eventually
@@ -25,11 +31,17 @@ class Threshold(models.Model):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
+    def __str__(self):
+     return "{self.event} Needs {self.resource}"
+
 
 class Role(models.Model):
     name = models.TextField()
     icon = models.FileField(upload_to='icons/roles/')
     resources = models.ManyToManyField(Resource, through='ResourceDepot')
+
+    def __str__(self):
+     return self.name
 
 
 class ResourceDepot(models.Model):
@@ -37,17 +49,23 @@ class ResourceDepot(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE, name="role")
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, name="resource")
 
+    def __str__(self):
+     return f"{self.role} has {self.quantity} {self.resource}"
 
 class Scenario(models.Model):
     events = models.ManyToManyField(Event)
     roles = models.ManyToManyField(Role)
 
+    def __str__(self):
+     return f"Scenario {self.id}"
 
 class Briefing(models.Model):
     details = models.TextField()
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
 
+    def __str__(self):
+     return f"Briefing for {self.role} in {self.scenario}"
 
 # Logging Info
 
@@ -64,6 +82,9 @@ class Session(models.Model):
     proctorNotes = models.TextField(default="")
     sessionNotes = models.TextField(default="")
 
+    def __str__(self):
+        return f"Created: {self.created_at} SessionKey: {self.sessionKey}"
+
 
 class Participant(models.Model):
     name = models.TextField()
@@ -72,6 +93,8 @@ class Participant(models.Model):
     role = models.ForeignKey(Role, null=True, on_delete=models.SET_NULL)
     score = models.ForeignKey(Score, on_delete=models.CASCADE, null=True)  # this should probably be under the session through role
 
+    def __str__(self):
+     return self.name
 
 class Action(models.Model):
     timestamp = models.DateTimeField()

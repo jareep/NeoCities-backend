@@ -25,7 +25,7 @@ SECRET_KEY = os.environ['NeoSecret']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["neocities.herokuapp.com"]
+ALLOWED_HOSTS = ["neocities.herokuapp.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -59,6 +59,7 @@ ROOT_URLCONF = 'neo_cities.urls'
 
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
+    'localhost:8000',
 )
 
 CORS_ALLOW_METHODS = (
