@@ -51,7 +51,7 @@ class SessionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Session
-        fields = ["scenario_ran"]
+        fields = ["scenario_ran", "sessionKey"]
         read_only_fields = ['id']
         depth = 4
 
