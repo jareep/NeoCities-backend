@@ -61,6 +61,7 @@ ROOT_URLCONF = 'neo_cities.urls'
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
     'localhost:8000',
+    's3.amazonaws.com'
 )
 
 CORS_ALLOW_METHODS = (
@@ -146,7 +147,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [('neocities.herokuapp.com', 6379)],
         },
     },
 }
