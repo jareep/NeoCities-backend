@@ -1,0 +1,24 @@
+{
+  "roles": {
+    "role": [
+      {
+        "id": "1",
+        "type": "Police",
+        "resources": [1, 2, 3],
+		"logo": "/images/roles/police.png"
+      },
+      {
+        "id": "2",
+        "type": "Fire",
+        "resources": [ 7, 8, 9],
+		"logo": "/images/roles/fire.png"
+      },
+      {
+        "id": "3",
+        "type": "Hazardous Materials",
+        "resources": [4, 5, 6],
+		"logo": "/images/roles/hazmat.png"
+      }
+    ]
+  }
+}

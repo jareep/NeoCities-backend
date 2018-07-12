@@ -1,0 +1,51 @@
+{
+  "resources": {
+    "resource": [
+      {
+        "id": "1",
+        "type": "Squad Car",
+        "icon": "/images/resources/squad_car.png"
+      },
+      {
+        "id": "2",
+        "type": "SWAT",
+        "icon": "/images/resources/swat.png"
+      },
+      {
+        "id": "3",
+        "type": "Investigator",
+        "icon": "/images/resources/investigator.png"
+      },
+      {
+        "id": "4",
+        "type": "Hazardous Materials",
+        "icon": "/images/resources/hazmat.png"
+      },
+      {
+        "id": "5",
+        "type": "Bomb Squad",
+        "icon": "/images/resources/bomb_squad.png"
+      },
+      {
+        "id": "6",
+        "type": "Investigator",
+        "icon": "/images/resources/investigator.png"
+      },
+      {
+        "id": "7",
+        "type": "Fire Truck",
+        "icon": "/images/resources/fire_truck.png"
+      },
+      {
+        "id": "8",
+        "type": "Ambulance",
+        "icon": "/images/resources/ambulance.png"
+      },
+      {
+        "id": "9",
+        "type": "Investigator",
+        "icon": "/images/resources/investigator.png"
+      }
+    ]
+  }
+}

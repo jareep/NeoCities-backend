@@ -7,3 +7,4 @@ channels
 channels_redis
 psycopg2
 dj_database_url
+django-extensions

@@ -1,0 +1,68 @@
+{
+  "scenario": {
+    "title": "With Hidden Knowledge Profiles",
+    "events": [
+      {
+        "event_id": "1",
+        "icon": "/images/icons/events/woozy.png",
+        "start_time": "18:15",
+        "run_time": "00:03:00",
+        "description": "Woozy Ride",
+        "details": "This is where the long description text goes.",
+        "enforce_resource_order": true,
+        "answer": [
+          {
+            "resource_id": 2,
+            "num_needed": 1
+          },
+          {
+            "resource_id": 3,
+            "num_needed": 2
+          }
+        ]
+      },
+      {
+        "event_id": "2",
+        "icon": "/images/icons/events/monkey.png",
+        "start_time": "9:25",
+        "run_time": "00:03:00",
+        "description": "Flying Laptops",
+        "details": "This is where the long description text goes.",
+        "enforce_resource_order": false,
+        "answer": [
+          {
+            "resource_id": 6,
+            "num_needed": 1
+          },
+          {
+            "resource_id": 9,
+            "num_needed": 1
+          },
+          {
+            "resource:id": 11,
+            "num_needed": 2
+          }
+        ]
+      }
+    ],
+    "briefings": [
+      {
+        "briefing_id": 1,
+        "start_time": "10:35",
+        "text": "This is where the long briefing text goes. This brief is only viewable by role_id = 1. We can use this to give all roles the same brief, or can customize the briefing for each role to simulate (or not) hidden knowledge profiles.",
+        "viewable_role": [
+          1
+        ]
+      },
+      {
+        "briefing_id": 2,
+        "start_time": "10:35",
+        "text": "This particular brief is viewable by roles 2 and 3. Notice that it also is 'deployed' at the same time as brief_id 1.",
+        "viewable_role": [
+          2,
+          3
+        ]
+      }
+    ]
+  }
+}

@@ -14,7 +14,7 @@ class Event(models.Model):
     # TODO : Event Name Field & update in Test
     success_resources = models.ManyToManyField(Resource, through='Threshold')
     icon = models.FileField(upload_to='icons/events/')
-    start_time = models.DateTimeField()
+    start_time = models.TimeField()
     description = models.TextField()
     details = models.TextField()
 
@@ -53,6 +53,7 @@ class ResourceDepot(models.Model):
      return f"{self.role} has {self.quantity} {self.resource}"
 
 class Scenario(models.Model):
+    title = models.TextField()
     events = models.ManyToManyField(Event)
     roles = models.ManyToManyField(Role)
 
@@ -86,15 +87,24 @@ class Session(models.Model):
         return f"Created: {self.created_at} SessionKey: {self.sessionKey}"
 
 
+class ChatSession(models.Model):
+    session = models.ForeignKey(Session, null=True, on_delete=models.SET_NULL)
+
 class Participant(models.Model):
     name = models.TextField()
     token = models.CharField(max_length=40, unique=True)
     session = models.ForeignKey(Session, null=True, on_delete=models.SET_NULL)
     role = models.ForeignKey(Role, null=True, on_delete=models.SET_NULL)
     score = models.ForeignKey(Score, on_delete=models.CASCADE, null=True)  # this should probably be under the session through role
+    chat_session = models.ForeignKey(ChatSession, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
      return self.name
+
+class Message(models.Model):
+    text = models.TextField()
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+    chat_session = models.ForeignKey(ChatSession, on_delete=models.CASCADE)
 
 class Action(models.Model):
     timestamp = models.DateTimeField()
