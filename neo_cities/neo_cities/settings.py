@@ -156,7 +156,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('neocities.herokuapp.com', 6379)],
+            "hosts": [os.environ["REDIS_URL"]],
         },
     },
 }
