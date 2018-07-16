@@ -41,15 +41,34 @@ def update_chat(**kwargs):
     chat_session = ChatSessionSerializer(kwargs["instance"].chat_session).data
     async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": json.dumps({"ChatSession": chat_session})})
 
+# Need to account for Order
+# If an event is completed it should remove all the things deployed to it and remain completed
 def check_for_win(event, session):
     event_won = True
+    thresholds = event.threshold_set.all()
+    resource_event_states_time = []
+    resource_event_states = []
+    # Check that each threshold is met
     for threshold in event.threshold_set.all():
         resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = threshold.resource)
+        print(resource_event_state.deployed, threshold.amount)
         if resource_event_state and resource_event_state.deployed >= threshold.amount:
-            resource_event_state.success = True
-            resource_event_state.save()
+            resource_event_states.append(resource_event_state)
+            resource_event_states_time.append(resource_event_state.updated)
         else:
-            resource_event_state.success = False
-            resource_event_state.save()
+            # resource_event_state.success = False
+            # resource_event_state.save()
             event_won = False
+
+    # If order is enforced and the resource event state updated times aren't in order the order sent is incorrect
+    if(thresholds[0].enforce_order and resource_event_states_time != sorted(resource_event_states_time)):
+        event_won = False
+
+    if(event_won):
+        for resource_event_state in resource_event_states:
+            resource_event_state.success = True
+            resource_event_state.deployed = 0
+            resource_event_state.save()
+
+
     return(event_won)

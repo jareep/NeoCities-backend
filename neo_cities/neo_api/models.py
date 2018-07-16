@@ -30,8 +30,11 @@ class Threshold(models.Model):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = [ "order" ]
+
     def __str__(self):
-     return "{self.event} Needs {self.resource}"
+     return f'{self.event} Needs {self.resource}'
 
 
 class Role(models.Model):
@@ -49,7 +52,7 @@ class ResourceDepot(models.Model):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, name="resource")
 
     def __str__(self):
-     return f"{self.role} has {self.quantity} {self.resource}"
+     return f'{self.role} has {self.quantity} {self.resource}'
 
 class Scenario(models.Model):
     title = models.TextField()
@@ -65,7 +68,7 @@ class Briefing(models.Model):
     scenario = models.ForeignKey(Scenario, on_delete=models.CASCADE)
 
     def __str__(self):
-     return f"Briefing for {self.role} in {self.scenario}"
+     return f'Briefing for {self.role} in {self.scenario}'
 
 # Logging Info
 
@@ -83,7 +86,7 @@ class Session(models.Model):
     sessionNotes = models.TextField(default="")
 
     def __str__(self):
-        return f"Created: {self.created_at} SessionKey: {self.sessionKey}"
+        return f'Created: {self.created_at} SessionKey: {self.sessionKey}'
 
 
 class ChatSession(models.Model):
@@ -121,3 +124,4 @@ class ResourceEventState(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, null=True, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    updated = models.DateTimeField(auto_now=True)

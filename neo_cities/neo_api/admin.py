@@ -29,7 +29,7 @@ def export_messages(modeladmin, request, queryset):
             writer.writerow([chat_session.id, chat_session.session.sessionKey, message.participant.name,  message.text])
 
     return response
-export_csv.short_description = "Export Messages to CSV's"
+export_csv.short_description = "Export Messages to CSV"
 
 class SessionAdmin(admin.ModelAdmin):
     list_display = ['scenario_ran', 'sessionKey']
