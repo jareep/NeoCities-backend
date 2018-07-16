@@ -64,7 +64,7 @@ def check_for_win(event, session):
         event_won = False
 
     if(event_won):
-        ResourceEventState.objects.get(session = session, event = event).update(success = True, deployed = 0)
+        ResourceEventState.objects.filter(session = session, event = event).update(success = True, deployed = 0)
 
 
     return(event_won)
