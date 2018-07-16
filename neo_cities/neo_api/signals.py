@@ -37,7 +37,6 @@ def send_dynamic_information(**kwargs):
 @receiver(post_save, sender=Message)
 def update_chat(**kwargs):
     channel_layer = get_channel_layer()
-    print("Is this running?")
     chat_session = ChatSessionSerializer(kwargs["instance"].chat_session).data
     async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": json.dumps({"ChatSession": chat_session})})
 
@@ -65,10 +64,7 @@ def check_for_win(event, session):
         event_won = False
 
     if(event_won):
-        for resource_event_state in resource_event_states:
-            resource_event_state.success = True
-            resource_event_state.deployed = 0
-            resource_event_state.save()
+        ResourceEventState.objects.get(session = session, event = event).update(success = True, deployed = 0)
 
 
     return(event_won)
