@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from neo_api.models import Resource, Event, Threshold, Role, ResourceDepot, Scenario, Briefing, Score, Participant, Session, Action, ResourceEventState, Message, ChatSession
-from neo_api.serializers import get_model_serializer, ParticipantSerializer, ResourceSerializer, RoleSerializer, ScenarioSerializer , ChatSessionSerializer, MessageSerializer, get_resource_event_state
+from neo_api.serializers import get_model_serializer, ParticipantSerializer, MessageSerializer, ResourceSerializer, RoleSerializer, ScenarioSerializer , ChatSessionSerializer, ActionSerializer, ResourceEventStateSerializer, get_resource_event_state
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,7 +12,7 @@ def intial_data(participant):
     return({
     "participant": participant.id, "sessionToken": participant.session.sessionKey,
     "sessionID": participant.session.id,
-    "ResourceEventStates": get_model_serializer(ResourceEventState, [])(ResourceEventState.objects.filter(session=participant.session), many=True).data,
+    "ResourceEventStates": ResourceEventStateSerializer(ResourceEventState.objects.filter(session=participant.session), many=True).data,
     "Events": get_model_serializer(Event, field_exceptions + ["threshold", "resourceeventstate"])(participant.session.scenario_ran.events.all(), many=True).data,
     "Briefing": get_model_serializer(Briefing, [])(Briefing.objects.filter(role = participant.role, scenario = participant.session.scenario_ran), many=True).data,
     "ChatSession": ChatSessionSerializer(participant.chat_session).data
@@ -89,10 +89,10 @@ class MessageViewSet(viewsets.ModelViewSet):
 
 class SessionViewSet(viewsets.ModelViewSet):
     queryset = Session.objects.all()
-    serializer_class = get_model_serializer(Session, field_exceptions + ["participant", "resourceeventstate"])
+    serializer_class = get_model_serializer(Session, field_exceptions + ["participant", "resourceeventstate", "chatsession"])
 
 
 
 class ActionViewSet(viewsets.ModelViewSet):
     queryset = Action.objects.all()
-    serializer_class = get_model_serializer(Action, field_exceptions + ["threshold", "role", "resourcedepot"])
+    serializer_class = ActionSerializer

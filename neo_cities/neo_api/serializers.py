@@ -67,17 +67,36 @@ class ParticipantSerializer(serializers.ModelSerializer):
         depth = 4
 
 class MessageSerializer(serializers.ModelSerializer):
+    participant_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Message
-        fields = ["text", "chat_session", "participant"]
+        fields = ["text", "chat_session", "participant", "participant_name"]
+        read_only_fields = [ "participant_name" ]
+
+    def get_participant_name(self, instance):
+        return instance.participant.name
 
 class ChatSessionSerializer(serializers.ModelSerializer):
+    message_set = MessageSerializer(many=True)
 
     class Meta:
         model = ChatSession
         fields = ["message_set", "id"]
         read_only_fields = ['id']
+        depth = 2
+
+class ActionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Action
+        fields = ["timestamp", "action_type", "session", "participant", "quantity", "resource", "event"]
+
+class ResourceEventStateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ResourceEventState
+        fields = ["success", "deployed", "resource", "event", "session", "role"]
         depth = 2
 
 def get_resource_event_state(event, resource, session):

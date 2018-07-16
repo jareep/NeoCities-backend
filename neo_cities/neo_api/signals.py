@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from neo_api.models import Action, ResourceEventState, ChatSession, Message
-from neo_api.serializers import get_model_serializer, get_resource_event_state, ChatSessionSerializer
+from neo_api.serializers import get_model_serializer, get_resource_event_state, MessageSerializer, ResourceEventStateSerializer, ChatSessionSerializer
 from . import dynamic_consumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -30,12 +30,16 @@ def send_dynamic_information(**kwargs):
         win_status = check_for_win(event, session)
 
         # Send the updated ResourceEventState
-        async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": json.dumps({ "event_success": win_status, "resource_event_state": get_model_serializer(ResourceEventState, [])(ResourceEventState.objects.filter(session=session), many=True).data})})
+        channel_layer = get_channel_layer()
+        updated_state = json.dumps({ "event_success": win_status, "resource_event_state": ResourceEventStateSerializer(ResourceEventState.objects.filter(session=session), many=True).data})
+        async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": updated_state})
 
 @receiver(post_save, sender=Message)
 def update_chat(**kwargs):
     channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": json.dumps({"ChatSession": get_model_serializer(ChatSession, ["participant", "message"])(kwargs["instance"]).data})})
+    print("Is this running?")
+    chat_session = ChatSessionSerializer(kwargs["instance"].chat_session).data
+    async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": json.dumps({"ChatSession": chat_session})})
 
 def check_for_win(event, session):
     event_won = True

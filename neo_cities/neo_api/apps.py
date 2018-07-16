@@ -9,3 +9,4 @@ class NeoApiConfig(AppConfig):
         print("ready")
         import neo_api.signals
         post_save.connect(receiver, sender='neo_api.Action')
+        post_save.connect(receiver, sender='neo_api.Message')

@@ -121,3 +121,4 @@ class ResourceEventState(models.Model):
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     session = models.ForeignKey(Session, null=True, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
