@@ -16,6 +16,10 @@ class Event(models.Model):
     start_time = models.TimeField()
     description = models.TextField()
     details = models.TextField()
+    success_message = models.TextField()
+    failure_message = models.TextField()
+    time_limit = models.TimeField()
+    difficulty = models.IntegerField()
 
     def __str__(self):
      return self.description
