@@ -22,10 +22,11 @@ def intial_data(participant):
 class InitParticipant(APIView):
     def get(self, request, participantKey, format=None):
         participant = Participant.objects.get(token = participantKey)
-        for resource in participant.role.resources.all():
-            for event in participant.session.scenario_ran.events.all():
-                get_resource_event_state(event, resource, participant.session)
-        return(Response(intial_data(participant)))
+        response = {
+            "sessionKey": participant.session.sessionKey,
+            "userID": participant.id
+        }
+        return(Response(response))
 
 class ResourceEventStateViewSet(APIView):
 
