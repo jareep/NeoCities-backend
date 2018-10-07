@@ -85,7 +85,7 @@ class BriefingViewSet(APIView):
             response["items"].append({briefing.id: get_model_serializer(Briefing, [])(briefing)})
             response["order"].append(briefing.id)
 
-        return(Response(response))
+        return(Response(response.data))
 
 class ParticipantViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
