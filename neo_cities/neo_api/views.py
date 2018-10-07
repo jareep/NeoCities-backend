@@ -83,7 +83,7 @@ class BriefingViewSet(APIView):
             }
         for briefing in briefings:
             response["items"].append({briefing.id: get_model_serializer(Briefing, [])(briefing)})
-            response["order"].append(order.append(briefing.id))
+            response["order"].append(briefing.id)
 
         return(Response(response))
 
