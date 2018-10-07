@@ -13,7 +13,6 @@ router.register(r'role', views.RoleViewSet)
 router.register(r'message', views.MessageViewSet)
 router.register(r'resourcesdepot', views.ResourceDepotViewSet)
 router.register(r'scenario', views.ScenarioViewSet)
-router.register(r'briefing', views.BriefingViewSet)
 router.register(r'score', views.ScoreViewSet)
 router.register(r'participant', views.ParticipantViewSet)
 router.register(r'session', views.SessionViewSet)
@@ -22,6 +21,7 @@ router.register(r'action', views.ActionViewSet)
 urlpatterns = [
     # url(r'^initParticipant/{pk}/', views.InitParticipant),
     path('api/resourceeventstate/<sessionKey>/', views.ResourceEventStateViewSet.as_view()),
+    path('api/briefing/<sessionKey>/', views.BriefingViewSet.as_view()),
     path('api/initparticipant/<participantKey>/', views.InitParticipant.as_view()),
     url(r'^api/', include(router.urls)),
     path('admin/', admin.site.urls),
