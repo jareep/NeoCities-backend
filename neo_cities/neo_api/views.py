@@ -72,11 +72,20 @@ class ScoreViewSet(viewsets.ModelViewSet):
     serializer_class = get_model_serializer(Score, field_exceptions + ["participant"])
 
 
-class BriefingViewSet(viewsets.ModelViewSet):
-    queryset = Briefing.objects.all()
-    serializer_class = get_model_serializer(Briefing, ["action"])
+class BriefingViewSet(APIView):
 
+    def get(self, request, sessionKey, format=None):
+        scenario = Session.objects.get(sessionKey = sessionKey).scenario_ran
+        briefings = Briefing.objects.filter(scenario_id = scenario.id)
+        response = {
+                "items": [],
+                "order": []
+            }
+        for item in briefings:
+            response[items].append({briefing.id: get_model_serializer(Briefing, [])(briefing)})
+            response[order].append(order.append(briefing.id))
 
+        return(Response(response))
 
 class ParticipantViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
