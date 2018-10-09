@@ -8,15 +8,15 @@ from rest_framework.response import Response
 # These are field exceptions for every model serializer
 field_exceptions = ["scenario", "action"]  # todo: look into storing the Model instead of string
 
-def intial_data(participant):
-    return({
-    "participant": participant.id, "sessionToken": participant.session.sessionKey,
-    "sessionID": participant.session.id,
-    "ResourceEventStates": ResourceEventStateSerializer(ResourceEventState.objects.filter(session=participant.session), many=True).data,
-    "Events": get_model_serializer(Event, field_exceptions + ["threshold", "resourceeventstate"])(participant.session.scenario_ran.events.all(), many=True).data,
-    "Briefing": get_model_serializer(Briefing, [])(Briefing.objects.filter(role = participant.role, scenario = participant.session.scenario_ran), many=True).data,
-    "ChatSession": ChatSessionSerializer(participant.chat_session).data
-    })
+def item_data(model, data, excluded = []):
+    response = {
+            "items": [],
+            "itemsOrder": []
+        }
+    for item in data:
+        response["items"].append({item.id: get_model_serializer(model, excluded)(item).data})
+        response["itemsOrder"].append(item.id)
+    return(response)
 
 # View for the intial login
 class InitParticipant(APIView):
@@ -72,20 +72,33 @@ class ScoreViewSet(viewsets.ModelViewSet):
     serializer_class = get_model_serializer(Score, field_exceptions + ["participant"])
 
 
-class BriefingViewSet(APIView):
+class BriefingItemView(APIView):
 
     def get(self, request, sessionKey, format=None):
         scenario = Session.objects.get(sessionKey = sessionKey).scenario_ran
         briefings = Briefing.objects.filter(scenario_id = scenario.id)
-        response = {
-                "items": [],
-                "itemsOrder": []
-            }
-        for briefing in briefings:
-            response["items"].append({briefing.id: get_model_serializer(Briefing, [])(briefing).data})
-            response["order"].append(briefing.id)
+        return(Response(item_data(Briefing, briefings)))
 
-        return(Response(response))
+class EventItemView(APIView):
+
+    def get(self, request, sessionKey, format=None):
+        scenario = Session.objects.get(sessionKey = sessionKey).scenario_ran
+        events = Event.objects.filter(scenario = scenario)
+        return(Response(item_data(Event, events, ["threshold", "scenario", "action", "resourceeventstate"])))
+
+class ResourceItemView(APIView):
+
+    def get(self, request, sessionKey, format=None):
+        role_ids = [role for role in Session.objects.get(sessionKey = sessionKey).scenario_ran.roles.all()]
+        resources = Resource.objects.filter(role__in = role_ids)
+        return(Response(item_data(Resource, resources, ["event", "threshold", "action", "role", "resourcedepot", "resourceeventstate"])))
+
+class MessageItemView(APIView):
+
+    def get(self, request, participantKey, format=None):
+        participant = Participant.objects.get(token = participantKey)
+        messages = Message.objects.filter(participant_id = participant.id)
+        return(Response(item_data(Message, messages)))
 
 class ParticipantViewSet(viewsets.ModelViewSet):
     queryset = Participant.objects.all()
