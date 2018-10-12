@@ -13,11 +13,11 @@ field_exceptions = ["scenario", "action"]  # todo: look into storing the Model i
 
 def item_data(model, data, excluded = []):
     response = {
-            "items": [],
+            "items": {},
             "itemsOrder": []
         }
     for item in data:
-        response["items"].append({item.id: get_model_serializer(model, excluded)(item).data})
+        response["items"][item.id] =  get_model_serializer(model, excluded)(item).data
         response["itemsOrder"].append(item.id)
     return(response)
 
