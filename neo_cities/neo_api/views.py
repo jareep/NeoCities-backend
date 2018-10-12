@@ -4,6 +4,9 @@ from neo_api.serializers import get_model_serializer, ParticipantSerializer, Mes
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from neo_api import tasks as task
+from datetime import datetime  
+from datetime import timedelta 
 
 # These are field exceptions for every model serializer
 field_exceptions = ["scenario", "action"]  # todo: look into storing the Model instead of string
@@ -18,10 +21,26 @@ def item_data(model, data, excluded = []):
         response["itemsOrder"].append(item.id)
     return(response)
 
+def schedule_tasks(session):
+    # Save the start time on the session
+    session.start_time = datetime.now()
+    # Go through the events in the scenario and use their time in relation to now 
+    # to schedule when they send and remove
+    for event in session.scenario_ran.events.all():
+        task.send_event(event.id, schedule = event.start_time)
+        task.send_event_failure(event.id, schedule = event.end_time)
+
+    # Go through the briefings in the scenario and use their time in relation to now
+    # to schedule when they send and remove
+    # for briefing in session.scenario_ran.briefings.all():
+    #     task.send_briefing(briefing.id, 10)
+
 # View for the intial login
 class InitParticipant(APIView):
     def get(self, request, participantKey, format=None):
         participant = Participant.objects.get(token = participantKey)
+        # Schedule Tasks TODO This will be in a different endpoint
+        schedule_tasks(participant.session)
         response = {
             "sessionKey": participant.session.sessionKey,
             "userID": participant.id

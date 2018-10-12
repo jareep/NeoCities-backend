@@ -13,12 +13,12 @@ class Event(models.Model):
     # TODO : Event Name Field & update in Test
     success_resources = models.ManyToManyField(Resource, through='Threshold')
     icon = models.FileField(upload_to='icons/events/')
-    start_time = models.TimeField()
+    start_time = models.IntegerField()
     description = models.TextField()
     details = models.TextField()
     success_message = models.TextField()
     failure_message = models.TextField()
-    time_limit = models.TimeField()
+    end_time = models.IntegerField()
     difficulty = models.IntegerField()
 
     def __str__(self):
@@ -86,6 +86,7 @@ class Session(models.Model):
     sessionKey = models.CharField(max_length=40, unique=True)
     scenario_ran = models.ForeignKey(Scenario, null=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField()
+    start_time = models.DateTimeField()
     proctorNotes = models.TextField(default="")
     sessionNotes = models.TextField(default="")
 
