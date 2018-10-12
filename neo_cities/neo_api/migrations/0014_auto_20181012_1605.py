@@ -23,6 +23,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='event',
             name='start_time',
-            field=models.IntegerField(),
+            field=models.IntegerField(default=10),
         ),
     ]
