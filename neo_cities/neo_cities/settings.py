@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework_api_key',
     'corsheaders',
     'channels',
-    'django_extensions'
+    'django_extensions',
+    'background_task',
 ]
 
 MIDDLEWARE = [
@@ -64,8 +65,6 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:8000',
     's3.amazonaws.com'
 )
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_METHODS = (
     'GET',
@@ -110,7 +109,7 @@ WSGI_APPLICATION = 'neo_cities.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ["DATABASE_URL"])
+     'default': dj_database_url.config(default=os.environ["DATABASE_URL"])
 }
 
 # DATABASES = {
@@ -157,7 +156,7 @@ ASGI_APPLICATION = "neo_cities.routing.application"
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
+        "CONFIG": {
             "hosts": [ os.environ["REDIS_URL"] ],
         },
     },
