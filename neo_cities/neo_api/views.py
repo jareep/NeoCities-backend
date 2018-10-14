@@ -65,7 +65,8 @@ class InitParticipant(APIView):
         response = {
             "sessionKey": participant.session.sessionKey,
             "userID": participant.id,
-            "chatSessions": participant.chat_session.id
+            "chatSessions": participant.chat_session.id,
+            "roleID": participant.role.id
         }
         return(Response(response))
 
