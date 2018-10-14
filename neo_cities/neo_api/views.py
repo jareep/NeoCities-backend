@@ -137,8 +137,8 @@ class ResourceItemView(APIView):
 
 class MessageItemView(APIView):
 
-    def get(self, request, chatSessionID, format=None):
-        chat_session = ChatSession.objects.get(id = chatSessionID)
+    def get(self, request, chatSessionId, format=None):
+        chat_session = ChatSession.objects.get(id = chatSessionId)
         messages = Message.objects.filter(chat_session = chat_session)
         return(Response(item_data(Message, messages)))
 
