@@ -15,6 +15,7 @@ def send_event(event_id):
     event = Event.objects.filter(id = event_id)
     updated_state = views.item_data(Event, event, ["threshold", "scenario", "action", "resourceeventstate"])
     updated_state["action"] = "Event_Item_Add"
+    updated_state["timestamp"] = datetime.now().timestamp()
     updated_state = json.dumps(updated_state)
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": updated_state})
@@ -27,7 +28,7 @@ def send_event_failure(event_id):
     event = Event.objects.filter(id = event_id)
     updated_state = views.item_data(Event, event, ["threshold", "scenario", "action", "resourceeventstate"])
     updated_state["action"] = "Event_Item_Remove"
-    updated_state["action"] = datetime.now()
+    updated_state["timestamp"] = datetime.now().timestamp()
     updated_state = json.dumps(updated_state)
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": updated_state})
