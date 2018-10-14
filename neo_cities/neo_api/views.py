@@ -7,6 +7,10 @@ from rest_framework.response import Response
 from neo_api import tasks as task
 from datetime import datetime  
 from datetime import timedelta 
+from . import dynamic_consumer
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import json
 
 # These are field exceptions for every model serializer
 field_exceptions = ["scenario", "action"]  # todo: look into storing the Model instead of string
@@ -22,10 +26,9 @@ def item_data(model, data, excluded = []):
     return(response)
 
 def schedule_tasks(session):
-    # Save the start time on the session
-    session.start_time = datetime.now()
     # Go through the events in the scenario and use their time in relation to now 
     # to schedule when they send and remove
+    print(session.scenario_ran)
     for event in session.scenario_ran.events.all():
         task.send_event(event.id, schedule = event.start_time)
         task.send_event_failure(event.id, schedule = event.end_time)
@@ -35,15 +38,34 @@ def schedule_tasks(session):
     # for briefing in session.scenario_ran.briefings.all():
     #     task.send_briefing(briefing.id, 10)
 
+class StartSimulation(APIView):
+
+    def get(self, request, sessionKey, format=None):
+        session = Session.objects.get(sessionKey = sessionKey)
+        # Save the start time on the session
+        session.start_time = datetime.now()
+        schedule_tasks(session)
+        response = {
+            "type": "SIMULATED_TIMER_CREATE",
+            "payload": {
+                "timeStart": session.start_time.timestamp(),
+                "simulatedTimeSpeed": 3
+            }
+
+        }
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": json.dumps(response)})
+        return(Response({"Simulation": "Started :)"}))
+
+
 # View for the intial login
 class InitParticipant(APIView):
     def get(self, request, participantKey, format=None):
         participant = Participant.objects.get(token = participantKey)
-        # Schedule Tasks TODO This will be in a different endpoint
-        schedule_tasks(participant.session)
         response = {
             "sessionKey": participant.session.sessionKey,
-            "userID": participant.id
+            "userID": participant.id,
+            "chatSessions": participant.chat_session.id
         }
         return(Response(response))
 
@@ -114,9 +136,9 @@ class ResourceItemView(APIView):
 
 class MessageItemView(APIView):
 
-    def get(self, request, participantKey, format=None):
-        participant = Participant.objects.get(token = participantKey)
-        messages = Message.objects.filter(participant_id = participant.id)
+    def get(self, request, chatSessionID, format=None):
+        chat_session = ChatSession.objects.get(id = chatSessionID)
+        messages = Message.objects.filter(chat_session = chat_session)
         return(Response(item_data(Message, messages)))
 
 class ParticipantViewSet(viewsets.ModelViewSet):
