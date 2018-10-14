@@ -62,6 +62,9 @@ class StartSimulation(APIView):
 class InitParticipant(APIView):
     def get(self, request, participantKey, format=None):
         participant = Participant.objects.get(token = participantKey)
+        for resource in participant.role.resources.all():
+            for event in participant.session.scenario_ran.events.all():
+                get_resource_event_state(event, resource, participant.session, participant.role)
         response = {
             "sessionKey": participant.session.sessionKey,
             "userID": participant.id,

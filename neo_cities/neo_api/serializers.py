@@ -99,12 +99,12 @@ class ResourceEventStateSerializer(serializers.ModelSerializer):
         fields = ["success", "deployed", "resource", "event", "session", "role"]
         depth = 2
 
-def get_resource_event_state(event, resource, session):
+def get_resource_event_state(event, resource, session, role):
     # If the resource event state has not been created create it
     try:
-        resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = resource)
+        resource_event_state = ResourceEventState.objects.get(session = session, event = event, resource = resource, role = role)
     except ResourceEventState.DoesNotExist:
-        resource_event_state = ResourceEventState.objects.create(session = session, resource = resource, event = event)
+        resource_event_state = ResourceEventState.objects.create(session = session, resource = resource, event = event, role = role)
 
     resource_event_state.save()
     return(resource_event_state)

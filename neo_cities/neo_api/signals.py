@@ -16,7 +16,7 @@ def send_dynamic_information(**kwargs):
         resource = kwargs['instance'].resource
         session = kwargs['instance'].session
 
-        resource_event_state = get_resource_event_state(event, resource, session)
+        resource_event_state = get_resource_event_state(event, resource, session, kwargs['instance'].role)
 
         # Calculate the appropriate values for the ResourceEventState
         print(kwargs['instance'].action_type)
