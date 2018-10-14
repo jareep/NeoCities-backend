@@ -105,8 +105,7 @@ class RoleViewSet(viewsets.ModelViewSet):
 class ResourceDepotViewSet(viewsets.ModelViewSet):
     queryset = ResourceDepot.objects.all()
     serializer_class = get_model_serializer(ResourceDepot, field_exceptions)
-
-
+    
 class ScenarioViewSet(viewsets.ModelViewSet):
     queryset = Scenario.objects.all()
     serializer_class = get_model_serializer(Scenario, field_exceptions + ["briefing", "session"])
@@ -115,6 +114,13 @@ class ScenarioViewSet(viewsets.ModelViewSet):
 class ScoreViewSet(viewsets.ModelViewSet):
     queryset = Score.objects.all()
     serializer_class = get_model_serializer(Score, field_exceptions + ["participant"])
+
+class ResourceDepotItemView(APIView):
+    def get(self, request, sessionKey, format=None):
+        role_ids = [role for role in Session.objects.get(sessionKey = sessionKey).scenario_ran.roles.all()]
+        resourcedepots = ResourceDepot.objects.filter(role__in = role_ids)
+        return(Response(item_data(ResourceDepot, resourcedepots, [])))
+
 
 
 class BriefingItemView(APIView):

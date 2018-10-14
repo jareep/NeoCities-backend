@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/events/<sessionKey>', views.EventItemView.as_view()),
     path('api/messages/<chatSessionId>', views.MessageItemView.as_view()),
     path('api/resources/<sessionKey>', views.ResourceItemView.as_view()),
+    path('api/resourcedepots/<sessionKey>', views.ResourceDepotItemView.as_view()),
     path('api/initparticipant/<participantKey>', views.InitParticipant.as_view()),
     path('api/startsimulation/<sessionKey>', views.StartSimulation.as_view()),
     url(r'^api/', include(router.urls)),
