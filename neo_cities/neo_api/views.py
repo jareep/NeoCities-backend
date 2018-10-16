@@ -77,8 +77,8 @@ class ResourceEventStateViewSet(APIView):
 
     def get(self, request, sessionKey, format=None):
         session = Session.objects.get(sessionKey = sessionKey)
-        current_state = get_model_serializer(ResourceEventState, field_exceptions)(ResourceEventState.objects.filter(session=session), many=True)
-        return(Response(current_state.data))
+        current_state = ResourceEventState.objects.filter(session=session)
+        return(Response(item_data(ResourceEventState, current_state, field_exceptions)))
 
 
 
