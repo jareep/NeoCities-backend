@@ -144,6 +144,14 @@ class ResourceItemView(APIView):
         resources = Resource.objects.filter(role__in = role_ids)
         return(Response(item_data(Resource, resources, ["event", "threshold", "action", "role", "resourcedepot", "resourceeventstate"])))
 
+
+class RoleItemView(APIView):
+
+    def get(self, request, sessionKey, format=None):
+        roles = Session.objects.get(sessionKey = sessionKey).scenario_ran.roles.all()
+        return(Response(item_data(Role, roles, ["resourcedepot", "scenario", "briefing", "participant", "resourceeventstate"])))
+
+
 class MessageItemView(APIView):
 
     def get(self, request, chatSessionId, format=None):
