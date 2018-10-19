@@ -12,10 +12,16 @@ from datetime import datetime
 @background(schedule=60)
 def send_event(event_id):
     # Send the event data through the websocket
-    event = Event.objects.filter(id = event_id)
-    updated_state = views.item_data(Event, event, ["threshold", "scenario", "action", "resourceeventstate"])
-    updated_state["action"] = "Event_Item_Add"
-    updated_state["timestamp"] = datetime.now().timestamp()
+    event = Event.objects.get(id = event_id)
+    updated_state = {
+        "type": "EVENT_ITEM_ADD",
+        "timestamp": datetime.now().timestamp()
+    }
+    response = {
+        "item": views.get_model_serializer(Event, ["threshold", "scenario", "action", "resourceeventstate"])(event).data,
+        "itemId": event.id,
+        "itemIndex": event.id
+    }
     updated_state = json.dumps(updated_state)
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)("participants", {"type": "send.json","text": updated_state})

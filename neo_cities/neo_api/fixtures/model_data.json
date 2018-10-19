@@ -39,6 +39,16 @@
     }
   },
   {
+    "model": "neo_api.threshold",
+    "pk": 2,
+    "fields": {
+      "order": 1,
+      "amount": 1,
+      "event": 1,
+      "resource": 2
+    }
+  },
+  {
     "model": "neo_api.event",
     "pk": 2,
     "fields": {
@@ -132,10 +142,11 @@
     "pk": 1,
     "fields": {
       "name": "RIP",
-      "token": "particpantID",
+      "token": "participantID",
       "session": 1,
       "role": 1,
-      "score": "1"
+      "score": "1",
+      "chat_session": 1
     }
   },
   {
@@ -146,7 +157,15 @@
      "token": "NewParticpantID",
      "session": 1,
      "role": 2,
-     "score": "1"
+     "score": "1",
+     "chat_session": 1
    }
- }
+  },
+  {
+     "model": "neo_api.ChatSession",
+     "pk": 1,
+     "fields": {
+       "session": 1
+     }
+   }
 ]

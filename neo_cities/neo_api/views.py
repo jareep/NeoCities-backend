@@ -67,6 +67,7 @@ class InitParticipant(APIView):
                 get_resource_event_state(event, resource, participant.session, participant.role)
         response = {
             "sessionKey": participant.session.sessionKey,
+            "sessionID": participant.session.id,
             "userID": participant.id,
             "chatSessions": participant.chat_session.id,
             "roleID": participant.role.id
